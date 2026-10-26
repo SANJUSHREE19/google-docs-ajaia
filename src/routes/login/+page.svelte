@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { enhance } from '$app/forms';
   import { triggerHaptic } from '$lib/haptics';
   import type { PageProps } from './$types';
@@ -26,24 +26,21 @@
         class="user-pill"
         class:active={email === 'sanju@example.com'}
         onclick={() => pickUser('sanju@example.com', 'password123')}
-      >
-        👤 Sanju
+      >👤 Sanju
       </button>
       <button
         type="button"
         class="user-pill"
         class:active={email === 'anil@example.com'}
         onclick={() => pickUser('anil@example.com', 'password123')}
-      >
-        👤 Anil
+      >👤 Anil
       </button>
       <button
         type="button"
         class="user-pill"
         class:active={email === 'raju@example.com'}
         onclick={() => pickUser('raju@example.com', 'password123')}
-      >
-        👤 Raju
+      >👤 Raju
       </button>
     </div>
   </div>

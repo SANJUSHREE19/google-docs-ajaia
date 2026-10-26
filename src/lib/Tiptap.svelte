@@ -82,19 +82,19 @@
         <button
           onclick={() => act(() => e.chain().focus().toggleBold().run(), 'toggle')}
           class:active={e.isActive('bold')}
-          title="Bold (⌘B)"
+          title="Bold (Ctrl+B)"
           aria-label="Bold"
         ><b>B</b></button>
         <button
           onclick={() => act(() => e.chain().focus().toggleItalic().run(), 'toggle')}
           class:active={e.isActive('italic')}
-          title="Italic (⌘I)"
+          title="Italic (Ctrl+I)"
           aria-label="Italic"
         ><i>I</i></button>
         <button
           onclick={() => act(() => e.chain().focus().toggleUnderline().run(), 'toggle')}
           class:active={e.isActive('underline')}
-          title="Underline (⌘U)"
+          title="Underline (Ctrl+U)"
           aria-label="Underline"
         ><u>U</u></button>
         <button
@@ -195,7 +195,7 @@
   <div class="editor-footer">
     <div class="stats-group">
       <span class="stat-badge">{stats.words} {stats.words === 1 ? 'word' : 'words'}</span>
-      <span class="stat-dot">·</span>
+      <span class="stat-dot">•</span>
       <span class="stat-badge">{stats.chars} chars</span>
     </div>
     <span class="reading-time">⏱ ~{Math.max(1, Math.ceil(stats.words / 200))} min read</span>

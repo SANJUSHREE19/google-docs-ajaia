@@ -1,64 +1,52 @@
-# Project Guardrails — Ajaia Take-Home
+# Project Guardrails: Ajaia Take-Home
 
-> Source spec: `ASSIGNMENT.md`. Master plan: `Plan.md`. Live status: `Progress.md`.
-> This file exists to keep us from drifting off-spec across sessions.
+**Candidate:** Sanjushree Golla  
+**Role:** Technical Program & Project Manager, AI Delivery  
+**Company:** Ajaia LLC  
 
-## Hard constraints (do not violate)
+> Source spec: `ASSIGNMENT.md` | Master plan: `Plan.md` | Live status: `Progress.md`
 
-- **Timebox: 4–6 hours total.** Spec literally says: "A focused, well-reasoned partial solution is better than an overextended build."
-- **Reviewers must not need to pay for any dependency or service.**
-- **Required deliverables (do not skip):**
-  - Live deployment URL
-  - Source code
-  - `README.md` (setup + run instructions)
-  - Architecture note (Markdown or PDF)
-  - AI workflow note (Markdown or PDF)
-  - `SUBMISSION.md` (manifest)
-  - One meaningful automated test
-  - Walkthrough video URL (3–5 min, public Loom/YouTube/etc.)
-  - Test accounts / seeded users for sharing review
-  - Screenshots / demo GIF if setup needs extra steps
+---
 
-## Required functionality (do not cut)
+## 1. Core Evaluation Criteria (From Ajaia Spec)
 
-1. **Doc creation/editing:** create, rename, edit in browser, save, reopen
-2. **Rich-text formatting:** bold, italic, underline, headings or text-size variation, bulleted + numbered lists
-3. **File upload:** at least one supported type (.txt/.md/.docx) imported into the workflow; supported types stated clearly in UI + README
-4. **Sharing:** document owner, grant access to another user, visible owned-vs-shared distinction
-5. **Persistence:** documents survive refresh, formatting preserved, shared access demonstrable
-6. **Mocked auth + seeded users is acceptable** (spec explicitly allows this)
-7. **Validation + error handling** at minimum
+- **Timebox:** 4–6 hours total. ("A focused, well-reasoned partial solution is better than an overextended build.")
+- **Zero Cost for Reviewers:** Must not require any paid subscription or proprietary dependency.
+- **Full Stack Execution:** Seamless delivery across frontend, editor, server actions, persistence, and access logic.
+- **Product Judgment:** Making conscious, well-reasoned scope cuts and communicating tradeoffs with clarity.
+- **Mature AI Utilization:** Practical engineering velocity without outsourcing technical rigor or design judgment.
 
-## Bias toward scope cuts
+---
 
-- "Prioritize depth in a few important areas over shallow coverage everywhere" — direct quote from spec
-- Stretch goals are **optional**. Never pursue them at the expense of core.
-- For any partial feature, document in submission: what works / what's incomplete / what we'd build next with 2–4 more hours
-- Strong candidates "make deliberate scope cuts and explain them clearly" — communicate tradeoffs, don't apologize
+## 2. Required Scope & Deliverables
 
-## What's being evaluated
+1. **Document CRUD & Formatting:** Create, edit, rename, save, reopen, and delete. Rich-text formatting (bold, italic, underline, headings, lists, tables).
+2. **File Upload Workflow:** Direct client-side import for `.txt`, `.md`, and `.docx` into editable document drafts (max 2 MB).
+3. **Sharing Model:** Document owner, permission granting/revoking, distinct dashboard views ("Your documents" vs. "Shared with you").
+4. **Persistence:** Hosted Supabase Postgres with JSONB content storage; zero-config SQLite offline fallback for local mode.
+5. **Quality & Security:** Self-contained email + password authentication with cryptographic `scrypt` hashing, input validation, and automated unit testing (`npm test`).
+6. **Documentation Package:**
+   - [`README.md`](./README.md): Setup, configuration, and run guide.
+   - [`SUBMISSION.md`](./SUBMISSION.md): Submission manifest, live URLs, and test credentials.
+   - [`ARCHITECTURE.md`](./ARCHITECTURE.md): System architecture, tradeoffs, security, and roadmap.
+   - [`AI_WORKFLOW.md`](./AI_WORKFLOW.md): AI-native workflow reflection and decision log.
 
-- Product judgment + scope cuts under time pressure
-- Full-stack execution (frontend, backend, persistence, access logic)
-- Editor experience quality within chosen scope
-- File upload + sharing logic
-- Deploy ability + testable build
-- Code clarity, maintainability, delivery discipline
-- Mature use of AI tools (practical, not voluminous)
-- Written + verbal communication
+---
 
-## Explicitly out of scope
+## 3. Deliberate Scope Cuts
 
-Do **not** build: real auth/signup, true co-editing (CRDT/OT/Yjs), comments, suggestions, version history graphs, link-based sharing, ACL inheritance, soft-delete trash, mobile-optimized layout, RLS policies, rate limiting, audit logs.
+To maintain high fidelity within the 4–6 hour boundary, the following are explicitly out of scope:
+- Live multi-cursor collaborative editing (CRDT/OT).
+- Comment threads and suggested changes mode.
+- Local disk image uploads to cloud storage buckets (embedded `.docx` images are preserved as data URIs).
+- Forgot-password email reset service (prioritized rock-solid self-managed scrypt auth).
 
-## Stack (locked in Phase 1)
+---
 
-SvelteKit (Svelte 5 + runes) · Tiptap **v3** · Supabase Postgres · Vercel · Vitest. Mocked auth via cookie + seeded users (Alice / Bob / Carol).
+## 4. Architectural Rules
 
-## Working style
-
-- Phased delivery with manual-test exit gates — see `Progress.md`
-- **Thin DB repo layer** at `src/lib/server/db/*` — only that folder imports `@supabase/...`
-- Doc content stored as **Tiptap `JSONContent` in JSONB**, never HTML strings
-- Permissions as a **join table** from day one: `document_permissions(doc_id, user_id, role)` — even though we ship only `editor` role
-- `updated_at` + `updated_by` on every document
+- **Thin Repository Layer:** Only `src/lib/server/db/*` interacts with Supabase or SQLite.
+- **Structured Content:** Document contents are stored exclusively as Tiptap `JSONContent` trees in JSONB columns, never unescaped HTML strings.
+- **Normalized Join Tables:** Document permissions are modeled in `document_permissions` from day one.
+- **Centralized Policy Enforcement:** All mutations pass through `policy.ts` (`requireOwner` or `requireAccess`).
+- **Autosave Reliability:** Debounced at 800ms with a `keepalive: true` unmount flush on page navigation.
